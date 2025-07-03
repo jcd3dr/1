@@ -54,8 +54,20 @@ function dadecore_scripts() {
     wp_enqueue_style( 'dadecore-main', get_template_directory_uri() . '/assets/css/main.css', [], $theme_version );
 
     wp_enqueue_script( 'dadecore-main', get_template_directory_uri() . '/assets/js/main.js', [], $theme_version, true );
+
+    // Enqueue Google Fonts
+    wp_enqueue_style( 'dadecore-google-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Poppins:wght@400;700&display=swap', [], null );
 }
 add_action( 'wp_enqueue_scripts', 'dadecore_scripts' );
+
+/**
+ * Enqueue styles for the block editor.
+ */
+function dadecore_editor_assets() {
+    // Enqueue Google Fonts for the editor
+    wp_enqueue_style( 'dadecore-google-fonts-editor', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Poppins:wght@400;700&display=swap', [], null );
+}
+add_action( 'enqueue_block_editor_assets', 'dadecore_editor_assets' );
 
 /**
  * Register widget areas.
