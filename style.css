@@ -42,11 +42,110 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap; /* Permitir que los elementos se envuelvan en diseños de varias líneas */
+}
+
+/* Layout por defecto: logo-left-menu-right */
+.layout-logo-left-menu-right .container {
+    flex-direction: row;
+    justify-content: space-between;
+}
+.layout-logo-left-menu-right .site-branding {
+    margin-right: auto; /* Empuja la navegación a la derecha */
+}
+.layout-logo-left-menu-right .main-navigation {
+    /* No se necesita mucho aquí si el branding empuja */
+}
+
+/* Estilos para Formatos de Post */
+.entry-format-quote .entry-content blockquote {
+    font-size: 1.4em;
+    font-style: italic;
+    margin: 1.5em 0;
+    padding: 1em 1.5em;
+    border-left: 5px solid var(--dadecore-primary-color);
+    background-color: #f9f9f9;
+}
+.entry-format-quote .entry-content cite {
+    display: block;
+    text-align: right;
+    font-style: normal;
+    font-weight: bold;
+    margin-top: 0.5em;
+}
+.entry-format-quote .entry-content cite.quote-author-fallback {
+    color: #777;
+}
+
+.entry-format-link .entry-title a .link-arrow {
+    display: inline-block;
+    margin-left: 0.5em;
+    font-weight: bold;
+    color: var(--dadecore-primary-color);
+    transition: transform 0.2s ease-in-out;
+}
+.entry-format-link .entry-title a:hover .link-arrow {
+    transform: translateX(5px);
+}
+.entry-format-link .entry-meta .link-source {
+    display: block; /* O inline-block con margen si se prefiere en la misma línea */
+    margin-top: 0.5em;
+    font-size: 0.9em;
+}
+.entry-format-link .entry-meta .link-source a {
+    font-style: italic;
+}
+
+
+/* Layout: logo-center-menu-below */
+.layout-logo-center-menu-below .container {
+    flex-direction: column;
+    align-items: center; /* Centra todo el contenido del header */
+}
+.layout-logo-center-menu-below .site-branding {
+    margin-bottom: 1rem; /* Espacio entre logo y menú */
+    text-align: center; /* Centra el logo/título si es de bloque */
+}
+.layout-logo-center-menu-below .main-navigation {
+    width: 100%; /* El menú ocupa todo el ancho */
+    display: flex;
+    justify-content: center; /* Centra los items del menú si son inline-block/flex */
+}
+.layout-logo-center-menu-below .main-navigation ul {
+    text-align: center;
+    justify-content: center; /* Para centrar los li si ul es flex */
+}
+
+/* Layout: logo-right-menu-left */
+.layout-logo-right-menu-left .container {
+    flex-direction: row;
+    justify-content: space-between;
+}
+.layout-logo-right-menu-left .site-branding {
+    order: 2; /* Mueve el branding a la derecha */
+    margin-left: auto; /* Empuja el menú a la izquierda si es necesario */
+}
+.layout-logo-right-menu-left .main-navigation {
+    order: 1; /* Mueve la navegación a la izquierda */
+    margin-right: auto;
+}
+
+
+.site-branding .site-title a {
+    text-decoration: none;
+    color: inherit; /* Hereda el color del header */
+    font-size: 1.8rem; /* Tamaño de título de sitio */
+    font-weight: bold;
+}
+.site-branding .site-description {
+    font-size: 0.9rem;
+    color: #6c757d; /* Un gris para la descripción */
 }
 
 .site-logo img {
     max-height: 50px; /* Ajustar según el tamaño del logo */
     width: auto;
+    display: block; /* Para evitar espacio extra debajo si está en un div */
 }
 
 .main-navigation ul {
@@ -85,9 +184,220 @@ body {
     margin-top: 2rem;
 }
 
-.site-footer a {
-    color: #007bff;
+.site-footer .container {
+    /* Podríamos añadir display: flex; flex-direction: column; si queremos que .site-info esté siempre debajo */
 }
+
+.footer-widgets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem; /* Espacio entre columnas de widgets */
+    margin-bottom: 2rem; /* Espacio antes de la información del sitio */
+}
+
+.footer-column {
+    flex-grow: 1;
+    flex-basis: 100%; /* Por defecto, una columna en móviles */
+}
+
+/* Desktop layouts para las columnas del footer */
+@media (min-width: 768px) { /* A partir de tablets */
+    .footer-widgets-cols-1 .footer-column {
+        flex-basis: 100%;
+    }
+    .footer-widgets-cols-2 .footer-column {
+        flex-basis: calc(50% - 1rem); /* 2 columnas con gap */
+    }
+    .footer-widgets-cols-3 .footer-column {
+        flex-basis: calc(33.333% - 1.34rem); /* 3 columnas con gap */
+    }
+    .footer-widgets-cols-4 .footer-column {
+        flex-basis: calc(25% - 1.5rem); /* 4 columnas con gap */
+    }
+}
+
+.site-footer a {
+    color: #007bff; /* Esto podría heredar de la variable --dadecore-primary-color o una específica del footer */
+}
+.site-footer .site-info {
+    text-align: center;
+    width: 100%;
+    margin-top: 1rem; /* Espacio si los widgets están encima */
+    padding-top: 1rem; /* Línea o espacio separador */
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Borde sutil si el fondo del footer es oscuro */
+}
+
+/* Estilos para Entradas Individuales (content.php) */
+.entry-single .entry-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+.entry-single .entry-title {
+    font-size: 2.5rem; /* Título más grande para single */
+    margin-bottom: 0.5rem;
+}
+.entry-single .entry-meta { /* Meta debajo del título en single */
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+.entry-single .entry-meta span {
+    margin-right: 1em;
+}
+.entry-single .entry-meta span:last-child {
+    margin-right: 0;
+}
+.entry-single .entry-meta a {
+    color: #6c757d;
+    text-decoration: none;
+}
+.entry-single .entry-meta a:hover {
+    color: var(--dadecore-primary-color);
+    text-decoration: underline;
+}
+
+.entry-single .single-featured-image {
+    margin-bottom: 2rem;
+}
+.entry-single .single-featured-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.25rem;
+}
+
+.entry-single .entry-content {
+    margin-bottom: 2rem;
+}
+.entry-single .entry-content p,
+.entry-single .entry-content ul,
+.entry-single .entry-content ol,
+.entry-single .entry-content blockquote {
+    margin-bottom: 1.5em;
+}
+.entry-single .entry-content h1,
+.entry-single .entry-content h2,
+.entry-single .entry-content h3,
+.entry-single .entry-content h4,
+.entry-single .entry-content h5,
+.entry-single .entry-content h6 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+
+.entry-single .entry-footer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+    font-size: 0.9em;
+    color: #495057;
+}
+.entry-single .entry-footer .entry-meta-footer span {
+    display: block; /* Categorías y etiquetas en líneas separadas */
+    margin-bottom: 0.5rem;
+}
+.entry-single .entry-footer .cat-links a,
+.entry-single .entry-footer .tags-links a {
+    text-decoration: none;
+    background-color: #e9ecef;
+    padding: 0.2em 0.6em;
+    border-radius: 0.2rem;
+    color: #495057;
+    font-size: 0.9em;
+}
+.entry-single .entry-footer .cat-links a:hover,
+.entry-single .entry-footer .tags-links a:hover {
+    background-color: var(--dadecore-primary-color);
+    color: #fff;
+}
+.entry-single .entry-footer .comments-link {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+.page-links {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+}
+.page-links a, .page-links > span {
+    padding: 0.5em 0.8em;
+    border: 1px solid #dee2e6;
+    margin-right: 0.3em;
+    text-decoration: none;
+}
+.page-links a:hover {
+    background-color: #e9ecef;
+}
+.page-links > span {
+    background-color: var(--dadecore-primary-color);
+    color: #fff;
+    border-color: var(--dadecore-primary-color);
+}
+
+/* Related Posts Section */
+.related-posts {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+.related-posts-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center; /* Opcional: centrar el título */
+}
+.related-posts ul {
+    list-style: none;
+    padding: 0;
+    display: grid; /* Usar grid para las columnas */
+    gap: 1.5rem; /* Espacio entre items */
+    /* Por defecto 1 columna, se ajustará con grid-template-columns abajo */
+}
+.related-posts ul li {
+    background-color: #ffffff; /* Fondo para cada item */
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.25rem;
+    display: flex; /* Para alinear miniatura y título */
+    flex-direction: column; /* Apilar elementos verticalmente por defecto */
+}
+.related-posts ul li .related-post-thumbnail {
+    display: block;
+    margin-bottom: 0.75rem;
+}
+.related-posts ul li .related-post-thumbnail img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.25rem;
+    aspect-ratio: 16/9; /* Mantener relación de aspecto para las imágenes */
+    object-fit: cover; /* Asegurar que la imagen cubra el área */
+}
+.related-posts ul li .related-post-title {
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--dadecore-text-color);
+    line-height: 1.4;
+}
+.related-posts ul li .related-post-title:hover {
+    color: var(--dadecore-primary-color);
+}
+
+/* Layout de columnas para related posts */
+@media (min-width: 576px) { /* Para pantallas pequeñas, 2 columnas */
+    .related-posts ul {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (min-width: 992px) { /* Para pantallas grandes, 3 columnas (o las que se configuren) */
+    .related-posts ul {
+        /* Si quisiéramos hacerlo dinámico según el número de posts a mostrar: */
+        /* grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); */
+        /* O fijo a 3 si es el default: */
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
 
 /* Estructura Blog Page */
 .blog-page-container .hero-section {
