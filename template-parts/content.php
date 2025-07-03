@@ -36,9 +36,17 @@
 
 
     <?php if ( is_singular() && has_post_thumbnail() && get_theme_mod('dadecore_single_display_featured_image', true) ) : ?>
+        <?php
+        $image_layout = get_theme_mod( 'dadecore_single_featured_image_layout', 'wide' );
+        $image_size = 'full'; // Por defecto, o el tamaño más grande registrado
+        $container_classes = 'post-thumbnail single-featured-image layout-' . esc_attr( $image_layout );
+
+        // Podríamos cambiar $image_size aquí si tuviéramos tamaños registrados específicos para 'wide' vs 'fullwidth'
+        // if ($image_layout === 'wide') { $image_size = 'large'; } // Ejemplo
+        ?>
         <?php do_action( 'dadecore_before_single_featured_image' ); ?>
-        <div class="post-thumbnail single-featured-image">
-            <?php the_post_thumbnail( 'full' ); // Usar 'full' o un tamaño grande para single ?>
+        <div class="<?php echo $container_classes; ?>">
+            <?php the_post_thumbnail( $image_size ); ?>
         </div>
         <?php do_action( 'dadecore_after_single_featured_image' ); ?>
     <?php endif; ?>

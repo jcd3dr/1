@@ -3,9 +3,16 @@
 
     <?php if ( has_post_thumbnail() ) : ?>
         <?php do_action( 'dadecore_before_excerpt_thumbnail' ); ?>
-        <div class="post-thumbnail">
+        <?php
+        $aspect_ratio_setting = get_theme_mod( 'dadecore_blog_thumbnail_aspect_ratio', '16-9' );
+        $thumbnail_class = 'post-thumbnail';
+        if ( $aspect_ratio_setting !== 'original' ) {
+            $thumbnail_class .= ' aspect-ratio-' . esc_attr( $aspect_ratio_setting );
+        }
+        ?>
+        <div class="<?php echo $thumbnail_class; ?>">
             <a href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
-                <?php the_post_thumbnail( 'large' ); // 'large' o el tamaño que prefieras ?>
+                <?php the_post_thumbnail( 'large' ); // Usar un tamaño grande para que CSS pueda recortar bien ?>
             </a>
         </div>
         <?php do_action( 'dadecore_after_excerpt_thumbnail' ); ?>

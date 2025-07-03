@@ -60,6 +60,11 @@
     // -- Header --
     dadecore_update_css_variable( 'dadecore_header_bg_color', '--dadecore-header-bg-color' );
     dadecore_update_css_variable( 'dadecore_header_text_color', '--dadecore-header-text-color' );
+    wp.customize( 'dadecore_logo_max_width', function( value ) {
+        value.bind( function( to ) {
+            document.documentElement.style.setProperty( '--dadecore-logo-max-width', to + 'px' );
+        } );
+    } );
 
     // -- Footer --
     dadecore_update_css_variable( 'dadecore_footer_bg_color', '--dadecore-footer-bg-color' );
@@ -161,5 +166,35 @@
 
     dadecore_toggle_post_meta_element( 'dadecore_display_post_summary', '.entry-summary' );
     dadecore_toggle_post_meta_element( 'dadecore_display_post_read_more', '.entry-footer' ); // Assuming read more is the only thing in footer
+
+    // -- Buttons Customizer --
+    function dadecore_update_button_style_variable( setting_id, variable_name_suffix, unit = '' ) {
+        wp.customize( setting_id, function( value ) {
+            value.bind( function( to ) {
+                document.documentElement.style.setProperty( '--dadecore-' + variable_name_suffix, to + unit );
+            } );
+        } );
+    }
+
+    // Primary Buttons
+    dadecore_update_button_style_variable( 'dadecore_btn_primary_bg_color', 'btn-primary-bg' );
+    dadecore_update_button_style_variable( 'dadecore_btn_primary_text_color', 'btn-primary-text' );
+    dadecore_update_button_style_variable( 'dadecore_btn_primary_border_color', 'btn-primary-border-color' );
+    dadecore_update_button_style_variable( 'dadecore_btn_primary_bg_color_hover', 'btn-primary-bg-hover' );
+    dadecore_update_button_style_variable( 'dadecore_btn_primary_text_color_hover', 'btn-primary-text-hover' );
+    dadecore_update_button_style_variable( 'dadecore_btn_primary_border_color_hover', 'btn-primary-border-color-hover' );
+    dadecore_update_button_style_variable( 'dadecore_btn_primary_border_thickness', 'btn-primary-border-thickness', 'px' );
+    dadecore_update_button_style_variable( 'dadecore_btn_primary_border_radius', 'btn-primary-border-radius', 'px' );
+
+    // Secondary Buttons
+    dadecore_update_button_style_variable( 'dadecore_btn_secondary_bg_color', 'btn-secondary-bg' );
+    dadecore_update_button_style_variable( 'dadecore_btn_secondary_text_color', 'btn-secondary-text' );
+    dadecore_update_button_style_variable( 'dadecore_btn_secondary_border_color', 'btn-secondary-border-color' );
+    dadecore_update_button_style_variable( 'dadecore_btn_secondary_bg_color_hover', 'btn-secondary-bg-hover' );
+    dadecore_update_button_style_variable( 'dadecore_btn_secondary_text_color_hover', 'btn-secondary-text-hover' );
+    dadecore_update_button_style_variable( 'dadecore_btn_secondary_border_color_hover', 'btn-secondary-border-color-hover' );
+    dadecore_update_button_style_variable( 'dadecore_btn_secondary_border_thickness', 'btn-secondary-border-thickness', 'px' );
+    dadecore_update_button_style_variable( 'dadecore_btn_secondary_border_radius', 'btn-secondary-border-radius', 'px' );
+
 
 } )( jQuery );
