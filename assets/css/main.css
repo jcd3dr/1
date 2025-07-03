@@ -1,28 +1,86 @@
 /* Main theme styles */
 body {
-    font-family: var(--dadecore-body-font-family);
-    color: #333; /* Default text color, can be overridden by theme.json or specific block styles */
+    font-family: var(--dadecore-body-font-family, 'Inter', sans-serif);
+    color: var(--dadecore-text-color, #425466);
+    background-color: var(--dadecore-background-color, #FFFFFF);
+    line-height: 1.6;
+    font-size: 16px; /* Base font size */
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: var(--dadecore-heading-font-family);
-    /* Margin/padding for headings should be defined here or in a reset/typography partial if not handled by blocks */
+h1, h2, h3, h4, h5, h6, .entry-title, .page-title, .widget-title {
+    font-family: var(--dadecore-heading-font-family, 'Poppins', sans-serif);
+    color: var(--dadecore-primary-color, #0A2540); /* Titles often use primary color or a very dark grey */
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.3;
 }
+
+h1, .h1-style { font-size: 2.5rem; } /* Example sizes, adjust as needed */
+h2, .h2-style { font-size: 2rem; }
+h3, .h3-style { font-size: 1.75rem; }
+h4, .h4-style { font-size: 1.5rem; }
+h5, .h5-style { font-size: 1.25rem; }
+h6, .h6-style { font-size: 1rem; }
+
 
 a {
-    color: var(--dadecore-primary-color);
+    color: var(--dadecore-primary-color, #0A2540);
+    text-decoration: none; /* Optional: remove underlines by default */
+    transition: color 0.3s ease;
+}
+
+a:hover, a:focus {
+    color: var(--dadecore-btn-primary-bg-hover, #00D1B2); /* Tech green for hover on links */
+    text-decoration: underline; /* Optional: add underline on hover */
 }
 
 .site-header {
-    background-color: var(--dadecore-header-bg-color);
+    background-color: var(--dadecore-header-bg-color, #FFFFFF); /* Default to white or a light tech grey */
     padding: 1rem 0;
     position: sticky;
     top: 0;
     z-index: 1000;
 }
+
+/* Styles for .site-logo img are now handled by customizer CSS variables */
+/*
 .site-logo {
     max-width: 150px;
 }
+*/
+
+.site-header .container {
+    display: flex;
+    align-items: center; /* Default vertical alignment */
+}
+
+/* Layout: Logo Left - Menu Right (Default) */
+.site-header.layout-logo-left-menu-right .container {
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+/* Layout: Logo Center - Menu Below */
+.site-header.layout-logo-center-menu-below .container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center; /* Center text for site title/description if no logo */
+}
+
+.site-header.layout-logo-center-menu-below .site-branding {
+    margin-bottom: 1rem; /* Space between logo/title and menu */
+}
+
+.site-header.layout-logo-center-menu-below .main-navigation ul {
+    justify-content: center; /* Center menu items */
+}
+
+/* Layout: Logo Right - Menu Left */
+.site-header.layout-logo-right-menu-left .container {
+    justify-content: space-between;
+    flex-direction: row-reverse; /* Order: nav, site-branding */
+}
+
 .main-navigation ul {
     list-style: none;
     margin: 0;
@@ -64,3 +122,357 @@ a {
 body.no-sidebar .content-with-sidebar {
     display: block;
 }
+
+/* Blog Post Cards */
+.blog-post-summary,
+.entry-summary { /* Assuming .entry-summary is used by content.php in lists */
+    background-color: #FFFFFF;
+    border: 1px solid #D1D9E6; /* Tech Grey - subtle border */
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(10, 37, 64, 0.05); /* Subtle shadow based on Dark Blue */
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+    display: flex; /* Make the article a flex container */
+    flex-direction: column; /* Stack items vertically */
+}
+
+.blog-post-summary:hover,
+.entry-summary:hover {
+    box-shadow: 0 8px 24px rgba(10, 37, 64, 0.1); /* Enhanced shadow on hover */
+    transform: translateY(-4px); /* Slight lift effect */
+}
+
+.blog-post-summary .post-thumbnail {
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    overflow: hidden; /* Ensure image respects border radius */
+}
+
+.blog-post-summary .post-thumbnail img {
+    display: block;
+    width: 100%;
+    height: 100%; /* Changed from auto to fill container */
+    object-fit: cover;
+}
+
+/* Aspect Ratio Styling for Thumbnails */
+.post-thumbnail { /* Applies to both excerpt and content.php if it uses this class */
+    position: relative;
+    overflow: hidden;
+    background-color: #f0f0f0; /* Placeholder background */
+}
+
+.post-thumbnail.aspect-ratio-16-9 { padding-top: 56.25%; } /* (9 / 16) * 100% */
+.post-thumbnail.aspect-ratio-4-3 { padding-top: 75%; }    /* (3 / 4) * 100% */
+.post-thumbnail.aspect-ratio-1-1 { padding-top: 100%; }   /* (1 / 1) * 100% */
+.post-thumbnail.aspect-ratio-3-4 { padding-top: 133.33%; } /* (4 / 3) * 100% */
+.post-thumbnail.aspect-ratio-9-16 { padding-top: 177.77%; } /* (16 / 9) * 100% */
+
+.post-thumbnail.aspect-ratio-original {
+    padding-top: 0 !important; /* Remove padding */
+}
+.post-thumbnail.aspect-ratio-original img {
+    position: static; /* Override absolute positioning */
+    height: auto; /* Let image define its height */
+}
+
+
+.post-thumbnail img { /* General rule for images inside aspect ratio containers */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.blog-post-summary .entry-title {
+    font-size: 1.5rem; /* Adjust as needed */
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.blog-post-summary .entry-title a {
+    text-decoration: none;
+    color: inherit; /* Inherit color from card, can be overridden */
+}
+
+.blog-post-summary .entry-meta {
+    font-size: 0.875rem;
+    color: #6B778D; /* Tech Grey - medium */
+    margin-bottom: 1rem;
+}
+
+.blog-post-summary .entry-summary {
+    margin-bottom: 1rem;
+    flex-grow: 1; /* Allows summary to take available space, pushing footer down */
+}
+
+.blog-post-summary .entry-footer {
+    margin-top: auto; /* Pushes footer to the bottom if card height is fixed or content varies */
+}
+
+.read-more-link {
+    display: inline-block;
+    /* Button styles will be applied later */
+}
+
+/* Blog Layouts */
+/* List View (default, no specific class needed if .site-main handles width) */
+.site-main.view-lista article.blog-post-summary,
+.site-main.view-lista article.entry-summary {
+    /* Styles specific to list view if any, e.g., max-width */
+}
+
+/* Grid View */
+.site-main.view-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive columns */
+    gap: 2rem; /* Space between cards */
+}
+
+.site-main.view-grid article.blog-post-summary,
+.site-main.view-grid article.entry-summary {
+    /* Ensure margin bottom is consistent or removed if gap is enough */
+    margin-bottom: 0; /* Grid gap handles spacing */
+}
+
+/* Ensure .entry-summary inside content.php also gets card styles if used in a list */
+.site-main.view-lista .type-post.format-standard.entry-summary, /* Specific to content.php */
+.site-main.view-grid .type-post.format-standard.entry-summary {
+    /* Similar card styles as .blog-post-summary */
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+.site-main.view-lista .type-post.format-standard.entry-summary:hover,
+.site-main.view-grid .type-post.format-standard.entry-summary:hover {
+     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.type-post.format-standard.entry-summary .post-thumbnail { /* For content.php */
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.type-post.format-standard.entry-summary .post-thumbnail img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.type-post.format-standard.entry-summary .entry-content {
+    flex-grow: 1;
+}
+.type-post.format-standard.entry-summary .entry-footer {
+    margin-top: auto;
+}
+
+/* Single Post Featured Image Layouts */
+.single-featured-image {
+    margin-bottom: 2rem; /* Espacio después de la imagen */
+    overflow: hidden; /* Para contener la imagen si es necesario */
+}
+
+.single-featured-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* O 'contain' si se prefiere no recortar */
+}
+
+/* Layout: Wide (default, constrained by the content container's width) */
+.single-featured-image.layout-wide {
+    /* No necesita estilos especiales si el contenedor .entry-single ya tiene el ancho correcto */
+    /* Podría tener un max-height si se desea, o usar aspect ratio como en el blog */
+}
+
+/* Layout: Fullwidth */
+.single-featured-image.layout-fullwidth {
+    width: 100vw; /* Ancho completo de la ventana */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    max-width: none; /* Sobrescribir cualquier max-width del contenedor padre */
+}
+
+/* Ajustes para que el contenido no quede debajo de la imagen fullwidth si el header es sticky/fixed */
+/* Esto puede necesitar ajustes específicos dependiendo de la altura del header */
+/* body.has-sticky-header .entry-single .single-featured-image.layout-fullwidth {
+    margin-top: -XXpx; /* Si el header es transparente y la imagen debe ir debajo
+} */
+
+/* Si la imagen fullwidth debe mantener un aspect ratio, se puede aplicar la misma técnica de padding-top */
+/* Por ejemplo:
+.single-featured-image.layout-fullwidth.aspect-ratio-16-9 {
+    padding-top: 56.25%;
+    height: 0;
+}
+.single-featured-image.layout-fullwidth.aspect-ratio-16-9 img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+*/
+
+/* Buttons */
+.btn,
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+.wp-block-button__link,
+.read-more-link { /* Include existing read-more link */
+    display: inline-block;
+    font-family: var(--dadecore-heading-font-family, 'Inter', sans-serif); /* Use heading font or specified button font */
+    font-weight: 600; /* Poppins and Inter look good bold */
+    text-decoration: none;
+    border: 2px solid transparent;
+    padding: 0.75em 1.5em;
+    border-radius: 5px; /* Default border radius */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    line-height: 1.2; /* Ensure text fits well */
+}
+
+/* Primary Button */
+.btn.btn-primary,
+button.btn-primary, /* For button elements */
+input[type="submit"].btn-primary, /* For submit inputs */
+.wp-block-button__link.is-style-fill, /* Gutenberg primary-like button */
+.wp-block-button__link:not(.is-style-outline), /* Default Gutenberg button as primary */
+.read-more-link, /* Style read-more as primary by default */
+.comment-form input[type="submit"].submit { /* Comment form submit button */
+    background-color: var(--dadecore-btn-primary-bg, #0A2540); /* Dark Blue */
+    color: var(--dadecore-btn-primary-text, #FFFFFF);
+    border-color: var(--dadecore-btn-primary-border-color, #0A2540); /* Dark Blue */
+}
+
+.btn.btn-primary:hover,
+button.btn-primary:hover,
+input[type="submit"].btn-primary:hover,
+.wp-block-button__link.is-style-fill:hover,
+.wp-block-button__link:not(.is-style-outline):hover,
+.read-more-link:hover,
+.comment-form input[type="submit"].submit:hover {
+    background-color: var(--dadecore-btn-primary-bg-hover, #00D1B2); /* Tech Green */
+    color: var(--dadecore-btn-primary-text-hover, #0A2540); /* Dark Blue for contrast on green */
+    border-color: var(--dadecore-btn-primary-border-color-hover, #00D1B2); /* Tech Green */
+}
+
+/* Secondary Button (Outline Style) */
+.btn.btn-secondary,
+button.btn-secondary,
+.wp-block-button__link.is-style-outline {
+    background-color: var(--dadecore-btn-secondary-bg, transparent);
+    color: var(--dadecore-btn-secondary-text, #0A2540); /* Dark Blue */
+    border-color: var(--dadecore-btn-secondary-border-color, #0A2540); /* Dark Blue */
+}
+
+.btn.btn-secondary:hover,
+button.btn-secondary:hover,
+.wp-block-button__link.is-style-outline:hover {
+    background-color: var(--dadecore-btn-secondary-bg-hover, #0A2540); /* Dark Blue */
+    color: var(--dadecore-btn-secondary-text-hover, #FFFFFF);
+    border-color: var(--dadecore-btn-secondary-border-color-hover, #0A2540); /* Dark Blue */
+}
+
+/* Apply customizer border radius and thickness if variables are set */
+.btn, button, input[type="button"], input[type="reset"], input[type="submit"], .wp-block-button__link {
+    border-width: var(--dadecore-btn-border-thickness, 2px);
+    border-radius: var(--dadecore-btn-border-radius, 5px);
+}
+
+.btn.btn-primary, button.btn-primary, input[type="submit"].btn-primary, .wp-block-button__link.is-style-fill, .wp-block-button__link:not(.is-style-outline), .read-more-link {
+    border-width: var(--dadecore-btn-primary-border-thickness, 2px);
+    border-radius: var(--dadecore-btn-primary-border-radius, 5px);
+}
+.btn.btn-secondary, button.btn-secondary, .wp-block-button__link.is-style-outline {
+    border-width: var(--dadecore-btn-secondary-border-thickness, 2px);
+    border-radius: var(--dadecore-btn-secondary-border-radius, 5px);
+}
+
+
+/* Ensure default WordPress buttons also pick up some styling */
+/* This was in customizer.php output, good to have it here too or ensure it's covered by .btn */
+/*
+.button, button, input[type="button"], input[type="reset"], input[type="submit"] {
+    background-color: var(--dadecore-primary-color); // This was the old primary color
+    color: #ffffff;
+    border-color: var(--dadecore-primary-color);
+}
+.button:hover, button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover {
+    opacity: 0.85;
+}
+*/
+
+/* Visual Effects */
+
+/* Animated Rainbow Borders (Optional) */
+body.has-animated-borders .btn:where(.btn-primary, .btn-secondary) {
+    position: relative;
+    overflow: hidden; /* To contain the pseudo-element */
+    z-index: 1; /* Ensure content is above pseudo-element */
+}
+
+body.has-animated-borders .btn:where(.btn-primary, .btn-secondary)::before {
+    content: "";
+    position: absolute;
+    top: calc(-1 * var(--border-thickness, 2px)); /* Use CSS var for thickness */
+    left: calc(-1 * var(--border-thickness, 2px));
+    right: calc(-1 * var(--border-thickness, 2px));
+    bottom: calc(-1 * var(--border-thickness, 2px));
+    background: conic-gradient(from 180deg at 50% 50%, var(--dadecore-btn-primary-bg-hover, #00D1B2), var(--dadecore-primary-color, #0A2540), #6B778D, var(--dadecore-btn-primary-bg-hover, #00D1B2)); /* Tech Green, Dark Blue, Medium Grey */
+    background-size: 200% 200%; /* Make gradient larger to animate its position */
+    z-index: -1;
+    border-radius: inherit; /* Inherit border-radius from button */
+    animation: rainbow-border-spin 4s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    /* Tie to respective button border thickness variables */
+}
+body.has-animated-borders .btn.btn-primary::before {
+    --border-thickness: var(--dadecore-btn-primary-border-thickness, 2px);
+}
+body.has-animated-borders .btn.btn-secondary::before {
+    --border-thickness: var(--dadecore-btn-secondary-border-thickness, 2px);
+}
+
+
+body.has-animated-borders .btn:where(.btn-primary, .btn-secondary):hover::before,
+body.has-animated-borders .btn:where(.btn-primary, .btn-secondary):focus::before {
+    opacity: 1;
+}
+
+@keyframes rainbow-border-spin {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Glassmorphism for Header (Optional) */
+/* For this to work well, the --dadecore-header-bg-color customizer setting should be a color with alpha, e.g. rgba(255,255,255,0.8) */
+body.has-glassmorphism .site-header {
+    background-color: var(--dadecore-header-bg-color-glass, hsla(0, 0%, 100%, 0.75)); /* Fallback if main var isn't alpha */
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%); /* Safari */
+    border-bottom: 1px solid var(--dadecore-glass-border-color, rgba(209, 217, 230, 0.5)); /* D1D9E6 with alpha */
+}
+
+/* Soft Animations and Hover Lighting are generally covered by existing transitions and box-shadows */
+/* The card hover already has a transform: translateY and enhanced box-shadow. */
+/* The main 'a:hover' has color transition and underline. */
+/* Buttons have 'transition: all 0.3s ease;' */

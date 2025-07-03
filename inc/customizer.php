@@ -30,17 +30,17 @@ function dadecore_customize_register( $wp_customize ) {
 
     // -- Controles existentes de color y fuentes (movidos a esta sección) --
     $wp_customize->add_setting( 'dadecore_primary_color', [
-        'default'           => '#007bff', // Actualizado a un azul más estándar
+        'default'           => '#0A2540', // Dark Blue Tech
         'sanitize_callback' => 'sanitize_hex_color',
         'transport'         => 'postMessage',
     ] );
     $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'dadecore_primary_color', [
-        'label'   => __( 'Color Primario', 'dadecore' ),
+        'label'   => __( 'Color Primario (Énfasis/Enlaces)', 'dadecore' ),
         'section' => 'dadecore_global_colors_section',
     ] ) );
 
     $wp_customize->add_setting( 'dadecore_text_color', [
-        'default'           => '#212529',
+        'default'           => '#425466', // Dark Grey Tech
         'sanitize_callback' => 'sanitize_hex_color',
         'transport'         => 'postMessage',
     ] );
@@ -50,25 +50,25 @@ function dadecore_customize_register( $wp_customize ) {
     ] ) );
 
     $wp_customize->add_setting( 'dadecore_background_color', [
-        'default'           => '#f8f9fa',
+        'default'           => '#FFFFFF', // White
         'sanitize_callback' => 'sanitize_hex_color',
         'transport'         => 'postMessage',
     ] );
     $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'dadecore_background_color', [
-        'label'   => __( 'Color de Fondo del Sitio', 'dadecore' ),
+        'label'   => __( 'Color de Fondo del Sitio (General)', 'dadecore' ),
         'section' => 'dadecore_global_colors_section',
     ] ) );
 
     // Fuentes (como estaban, pero en la nueva sección)
     $font_choices = [
         'System Default' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        'Inter' => 'Inter, sans-serif', // Google Font
+        'Poppins' => 'Poppins, sans-serif', // Google Font
         'Arial' => 'Arial, Helvetica, sans-serif',
         'Verdana' => 'Verdana, Geneva, sans-serif',
         'Tahoma' => 'Tahoma, Geneva, sans-serif',
         'Times New Roman' => '"Times New Roman", Times, serif',
         'Georgia' => 'Georgia, serif',
-        'Inter' => 'Inter, sans-serif', // Google Font
-        'Poppins' => 'Poppins, sans-serif', // Google Font
         'Lato' => 'Lato, sans-serif', // Google Font
         'Montserrat' => 'Montserrat, sans-serif', // Google Font
         'Open Sans' => '"Open Sans", sans-serif', // Google Font
@@ -80,7 +80,7 @@ function dadecore_customize_register( $wp_customize ) {
     ];
 
     $wp_customize->add_setting( 'dadecore_body_font', [
-        'default'           => 'System Default',
+        'default'           => 'Inter', // Default to Inter
         'sanitize_callback' => 'dadecore_sanitize_font_choice',
         'transport'         => 'postMessage',
     ] );
@@ -93,7 +93,7 @@ function dadecore_customize_register( $wp_customize ) {
     ] );
 
     $wp_customize->add_setting( 'dadecore_heading_font', [
-        'default'           => 'System Default',
+        'default'           => 'Poppins', // Default to Poppins
         'sanitize_callback' => 'dadecore_sanitize_font_choice',
         'transport'         => 'postMessage',
     ] );
@@ -151,6 +151,24 @@ function dadecore_customize_register( $wp_customize ) {
             'logo-right-menu-left' => __( 'Logo Derecha - Menú Izquierda', 'dadecore' ),
         ],
         'settings' => 'dadecore_header_layout',
+    ] );
+
+    // -- Control: Logo Max Width --
+    $wp_customize->add_setting( 'dadecore_logo_max_width', [
+        'default'           => 150, // Default max width in pixels
+        'sanitize_callback' => 'absint',
+        'transport'         => 'postMessage',
+    ] );
+    $wp_customize->add_control( 'dadecore_logo_max_width_control', [
+        'label'       => __( 'Ancho Máximo del Logo (px)', 'dadecore' ),
+        'section'     => 'dadecore_header_section',
+        'type'        => 'number',
+        'input_attrs' => [
+            'min'  => 50,
+            'max'  => 500,
+            'step' => 10,
+        ],
+        'settings'    => 'dadecore_logo_max_width',
     ] );
 
 
@@ -362,6 +380,28 @@ function dadecore_customize_register( $wp_customize ) {
         'active_callback' => function() { return get_theme_mod('dadecore_pagination_show_prev_next', true); }
     ] );
 
+    // -- Control: Blog Post Thumbnail Aspect Ratio --
+    $wp_customize->add_setting( 'dadecore_blog_thumbnail_aspect_ratio', [
+        'default'           => '16-9',
+        'sanitize_callback' => 'dadecore_sanitize_aspect_ratio',
+        'transport'         => 'refresh', // CSS classes will be added/changed
+    ] );
+    $wp_customize->add_control( 'dadecore_blog_thumbnail_aspect_ratio_control', [
+        'label'   => __( 'Relación de Aspecto para Miniaturas del Blog', 'dadecore' ),
+        'section' => 'dadecore_blog_layout_section',
+        'type'    => 'select',
+        'choices' => [
+            'original' => __( 'Original (Sin forzar)', 'dadecore' ),
+            '16-9'     => __( '16:9 (Panorámica)', 'dadecore' ),
+            '4-3'      => __( '4:3 (Estándar)', 'dadecore' ),
+            '1-1'      => __( '1:1 (Cuadrada)', 'dadecore' ),
+            '3-4'      => __( '3:4 (Vertical)', 'dadecore' ),
+            '9-16'     => __( '9:16 (Vertical Estrecha)', 'dadecore' ),
+        ],
+        'settings' => 'dadecore_blog_thumbnail_aspect_ratio',
+        'description' => __( 'Afecta a las imágenes destacadas en el listado de entradas del blog.', 'dadecore' ),
+    ] );
+
 
     // 2.5. Sección: Sidebar
     $wp_customize->add_section( 'dadecore_sidebar_section', [
@@ -404,6 +444,28 @@ function dadecore_customize_register( $wp_customize ) {
         'label'   => __( 'Mostrar Imagen Destacada en Entradas Individuales', 'dadecore' ),
         'section' => 'dadecore_single_post_section',
         'type'    => 'checkbox',
+    ] );
+
+    // -- Control: Single Post Featured Image Layout --
+    $wp_customize->add_setting( 'dadecore_single_featured_image_layout', [
+        'default'           => 'wide',
+        'sanitize_callback' => 'dadecore_sanitize_single_featured_image_layout',
+        'transport'         => 'refresh',
+    ] );
+    $wp_customize->add_control( 'dadecore_single_featured_image_layout_control', [
+        'label'   => __( 'Diseño de Imagen Destacada (Entrada Individual)', 'dadecore' ),
+        'section' => 'dadecore_single_post_section',
+        'type'    => 'select',
+        'choices' => [
+            'wide'    => __( 'Ancho (Wide - como el contenido)', 'dadecore' ),
+            'fullwidth' => __( 'Ancho Completo (Fullwidth - se extiende)', 'dadecore' ),
+            // Podríamos añadir 'standard' o 'medium' si registramos tamaños específicos
+        ],
+        'settings' => 'dadecore_single_featured_image_layout',
+        'active_callback' => function() { // Solo mostrar si la imagen destacada está habilitada
+            return get_theme_mod( 'dadecore_single_display_featured_image', true );
+        },
+        'description' => __( 'Define cómo se muestra la imagen destacada en la parte superior de las entradas individuales.', 'dadecore' ),
     ] );
 
     // -- Related Posts Settings --
@@ -465,6 +527,86 @@ function dadecore_customize_register( $wp_customize ) {
         },
     ] );
     // Aquí se podrían añadir más opciones para single, como mostrar/ocultar meta, etc.
+
+    // 2.7. Sección: Botones
+    //=============================================
+    $wp_customize->add_section( 'dadecore_buttons_section', [
+        'title'    => __( 'Botones', 'dadecore' ),
+        'panel'    => 'dadecore_main_panel',
+        'priority' => 60,
+    ] );
+
+    // Controles para Botones Primarios
+    dadecore_add_button_style_controls( $wp_customize, 'dadecore_buttons_section', 'dadecore_btn_primary', __( 'Primario', 'dadecore' ), [
+        'bg_color'         => '#0A2540', // Dark Blue
+        'text_color'       => '#FFFFFF', // White
+        'border_color'     => '#0A2540', // Dark Blue
+        'bg_color_hover'   => '#00D1B2', // Tech Green
+        'text_color_hover' => '#0A2540', // Dark Blue
+        'border_color_hover' => '#00D1B2', // Tech Green
+        'border_thickness' => 2,
+        'border_radius'    => 5,
+    ]);
+
+    // Añadir un separador o título para los botones secundarios
+     $wp_customize->add_setting( 'dadecore_secondary_buttons_heading', [
+        'sanitize_callback' => 'sanitize_text_field', // No se guarda, solo para UI
+    ] );
+    $wp_customize->add_control( new WP_Customize_Control( $wp_customize, 'dadecore_secondary_buttons_heading_control', [
+        'label'       => '', // Sin label principal
+        'section'     => 'dadecore_buttons_section',
+        'type'        => 'hidden',
+        'description' => '<hr style="margin-top:1.5em; margin-bottom:1em;"><h3>' . __( 'Botones Secundarios', 'dadecore' ) . '</h3>',
+    ] ) );
+
+    // Controles para Botones Secundarios
+    dadecore_add_button_style_controls( $wp_customize, 'dadecore_buttons_section', 'dadecore_btn_secondary', __( 'Secundario', 'dadecore' ), [
+        'bg_color'         => 'transparent',
+        'text_color'       => '#0A2540', // Dark Blue
+        'border_color'     => '#0A2540', // Dark Blue
+        'bg_color_hover'   => '#0A2540', // Dark Blue
+        'text_color_hover' => '#FFFFFF', // White
+        'border_color_hover' => '#0A2540', // Dark Blue
+        'border_thickness' => 2,
+        'border_radius'    => 5,
+    ]);
+
+    // 2.8. Sección: Efectos Visuales
+    //=============================================
+    $wp_customize->add_section( 'dadecore_visual_effects_section', [
+        'title'    => __( 'Efectos Visuales', 'dadecore' ),
+        'panel'    => 'dadecore_main_panel',
+        'priority' => 70,
+        'description' => __( 'Activa o desactiva efectos visuales modernos en el tema.', 'dadecore' ),
+    ] );
+
+    $visual_effects = [
+        'enable_animated_borders' => __( 'Activar Bordes Arcoíris Animados (en hover/focus de botones)', 'dadecore' ),
+        'enable_hover_lighting'   => __( 'Activar Iluminación en Hover (tarjetas, enlaces)', 'dadecore' ), // Ya parcialmente en tarjetas
+        'enable_glassmorphism'    => __( 'Activar Glassmorphism Sutil (ej. cabecera si es transparente)', 'dadecore' ),
+        'enable_soft_animations'  => __( 'Activar Animaciones Suaves (transiciones generales)', 'dadecore' ) // Ya aplicadas en CSS
+    ];
+
+    foreach ( $visual_effects as $setting_id => $label ) {
+        // No necesitamos control para 'enable_soft_animations' ya que se asume activado por defecto vía CSS.
+        // Tampoco para 'enable_hover_lighting' en tarjetas porque ya está en el CSS base de la tarjeta.
+        // Este control sería para un efecto de iluminación más generalizado o diferente.
+        // Por ahora, enfocaré en 'animated_borders' y 'glassmorphism' como opciones explícitas.
+
+        if ($setting_id === 'enable_animated_borders' || $setting_id === 'enable_glassmorphism') {
+             $wp_customize->add_setting( 'dadecore_' . $setting_id, [
+                'default'           => false, // Desactivados por defecto
+                'sanitize_callback' => 'wp_validate_boolean',
+                'transport'         => 'refresh', // Puede requerir cambio de clases en el body o CSS condicional
+            ] );
+            $wp_customize->add_control( 'dadecore_' . $setting_id . '_control', [
+                'label'   => $label,
+                'section' => 'dadecore_visual_effects_section',
+                'type'    => 'checkbox',
+                'settings' => 'dadecore_' . $setting_id,
+            ] );
+        }
+    }
 
 }
 add_action( 'customize_register', 'dadecore_customize_register', 20 );
@@ -557,6 +699,137 @@ function dadecore_sanitize_font_choice( $input_key ) {
     return 'System Default';
 }
 
+/**
+ * Sanitize callback for aspect ratio choices.
+ */
+function dadecore_sanitize_aspect_ratio( $input ) {
+    $valid_ratios = [
+        'original', '16-9', '4-3', '1-1', '3-4', '9-16'
+    ];
+    if ( in_array( $input, $valid_ratios, true ) ) {
+        return $input;
+    }
+    return '16-9'; // Default fallback
+}
+
+/**
+ * Sanitize callback for single featured image layout.
+ */
+function dadecore_sanitize_single_featured_image_layout( $input ) {
+    $valid_layouts = [
+        'wide', 'fullwidth'
+        // Añadir otros si se implementan
+    ];
+    if ( in_array( $input, $valid_layouts, true ) ) {
+        return $input;
+    }
+    return 'wide'; // Default fallback
+}
+
+// Helper function for button controls
+function dadecore_add_button_style_controls( $wp_customize, $section_id, $prefix, $label_prefix, $defaults ) {
+
+    // Background Color
+    $wp_customize->add_setting( "{$prefix}_bg_color", [
+        'default'           => $defaults['bg_color'],
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ] );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, "{$prefix}_bg_color_control", [
+        'label'   => $label_prefix . __( ' Color de Fondo', 'dadecore' ),
+        'section' => $section_id,
+        'settings' => "{$prefix}_bg_color",
+    ] ) );
+
+    // Text Color
+    $wp_customize->add_setting( "{$prefix}_text_color", [
+        'default'           => $defaults['text_color'],
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ] );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, "{$prefix}_text_color_control", [
+        'label'   => $label_prefix . __( ' Color de Texto', 'dadecore' ),
+        'section' => $section_id,
+        'settings' => "{$prefix}_text_color",
+    ] ) );
+
+    // Border Color
+    $wp_customize->add_setting( "{$prefix}_border_color", [
+        'default'           => $defaults['border_color'],
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ] );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, "{$prefix}_border_color_control", [
+        'label'   => $label_prefix . __( ' Color de Borde', 'dadecore' ),
+        'section' => $section_id,
+        'settings' => "{$prefix}_border_color",
+    ] ) );
+
+    // Background Color Hover
+    $wp_customize->add_setting( "{$prefix}_bg_color_hover", [
+        'default'           => $defaults['bg_color_hover'],
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ] );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, "{$prefix}_bg_color_hover_control", [
+        'label'   => $label_prefix . __( ' Color de Fondo (Hover)', 'dadecore' ),
+        'section' => $section_id,
+        'settings' => "{$prefix}_bg_color_hover",
+    ] ) );
+
+    // Text Color Hover
+    $wp_customize->add_setting( "{$prefix}_text_color_hover", [
+        'default'           => $defaults['text_color_hover'],
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ] );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, "{$prefix}_text_color_hover_control", [
+        'label'   => $label_prefix . __( ' Color de Texto (Hover)', 'dadecore' ),
+        'section' => $section_id,
+        'settings' => "{$prefix}_text_color_hover",
+    ] ) );
+
+    // Border Color Hover
+    $wp_customize->add_setting( "{$prefix}_border_color_hover", [
+        'default'           => $defaults['border_color_hover'],
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport'         => 'postMessage',
+    ] );
+    $wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, "{$prefix}_border_color_hover_control", [
+        'label'   => $label_prefix . __( ' Color de Borde (Hover)', 'dadecore' ),
+        'section' => $section_id,
+        'settings' => "{$prefix}_border_color_hover",
+    ] ) );
+
+    // Border Thickness
+    $wp_customize->add_setting( "{$prefix}_border_thickness", [
+        'default'           => $defaults['border_thickness'],
+        'sanitize_callback' => 'absint',
+        'transport'         => 'postMessage',
+    ] );
+    $wp_customize->add_control( "{$prefix}_border_thickness_control", [
+        'label'       => $label_prefix . __( ' Grosor del Borde (px)', 'dadecore' ),
+        'section'     => $section_id,
+        'type'        => 'number',
+        'input_attrs' => [ 'min' => 0, 'max' => 10, 'step' => 1 ],
+        'settings'    => "{$prefix}_border_thickness",
+    ] );
+
+    // Border Radius
+    $wp_customize->add_setting( "{$prefix}_border_radius", [
+        'default'           => $defaults['border_radius'],
+        'sanitize_callback' => 'absint',
+        'transport'         => 'postMessage',
+    ] );
+    $wp_customize->add_control( "{$prefix}_border_radius_control", [
+        'label'       => $label_prefix . __( ' Radio del Borde (px)', 'dadecore' ),
+        'section'     => $section_id,
+        'type'        => 'number',
+        'input_attrs' => [ 'min' => 0, 'max' => 50, 'step' => 1 ],
+        'settings'    => "{$prefix}_border_radius",
+    ] );
+}
+
 
 /**
  * Output custom styles based on Customizer settings using CSS Custom Properties.
@@ -564,21 +837,22 @@ function dadecore_sanitize_font_choice( $input_key ) {
 function dadecore_customizer_css() {
     ob_start();
 
-    $primary_color     = get_theme_mod( 'dadecore_primary_color', '#007bff' );
-    $text_color        = get_theme_mod( 'dadecore_text_color', '#212529' );
-    $background_color  = get_theme_mod( 'dadecore_background_color', '#f8f9fa' );
+    // Updated defaults to match the new tech theme
+    $primary_color     = get_theme_mod( 'dadecore_primary_color', '#0A2540' );
+    $text_color        = get_theme_mod( 'dadecore_text_color', '#425466' );
+    $background_color  = get_theme_mod( 'dadecore_background_color', '#FFFFFF' );
 
     // Font handling: get the key, then map to the full font stack.
     // Este array debe ser idéntico al usado en dadecore_customize_register para las $font_choices
     $font_mappings = [
         'System Default' => '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        'Inter' => 'Inter, sans-serif',
+        'Poppins' => 'Poppins, sans-serif',
         'Arial' => 'Arial, Helvetica, sans-serif',
         'Verdana' => 'Verdana, Geneva, sans-serif',
         'Tahoma' => 'Tahoma, Geneva, sans-serif',
         'Times New Roman' => '"Times New Roman", Times, serif',
         'Georgia' => 'Georgia, serif',
-        'Inter' => 'Inter, sans-serif',
-        'Poppins' => 'Poppins, sans-serif',
         'Lato' => 'Lato, sans-serif',
         'Montserrat' => 'Montserrat, sans-serif',
         'Open Sans' => '"Open Sans", sans-serif',
@@ -586,19 +860,41 @@ function dadecore_customizer_css() {
         'Oswald' => 'Oswald, sans-serif',
         'Noto Sans' => '"Noto Sans", sans-serif',
     ];
-    $default_font_key = 'System Default';
+    // Updated default font keys
+    $default_body_font_key = 'Inter';
+    $default_heading_font_key = 'Poppins';
 
-    $body_font_key  = get_theme_mod( 'dadecore_body_font', $default_font_key );
-    $heading_font_key = get_theme_mod( 'dadecore_heading_font', $default_font_key );
+    $body_font_key  = get_theme_mod( 'dadecore_body_font', $default_body_font_key );
+    $heading_font_key = get_theme_mod( 'dadecore_heading_font', $default_heading_font_key );
 
     $body_font_stack = $font_mappings[$body_font_key] ?? $font_mappings[$default_font_key];
     $heading_font_stack = $font_mappings[$heading_font_key] ?? $font_mappings[$default_font_key];
 
     $header_bg_color   = get_theme_mod( 'dadecore_header_bg_color', '#ffffff' );
     $header_text_color = get_theme_mod( 'dadecore_header_text_color', '#212529' );
+    $logo_max_width    = get_theme_mod( 'dadecore_logo_max_width', 150 );
 
     $footer_bg_color   = get_theme_mod( 'dadecore_footer_bg_color', '#343a40' );
     $footer_text_color = get_theme_mod( 'dadecore_footer_text_color', '#ffffff' );
+
+    // Button Variables
+    $btn_primary_bg_color = get_theme_mod('dadecore_btn_primary_bg_color', '#0A2540');
+    $btn_primary_text_color = get_theme_mod('dadecore_btn_primary_text_color', '#FFFFFF');
+    $btn_primary_border_color = get_theme_mod('dadecore_btn_primary_border_color', '#0A2540');
+    $btn_primary_bg_color_hover = get_theme_mod('dadecore_btn_primary_bg_color_hover', '#00D1B2');
+    $btn_primary_text_color_hover = get_theme_mod('dadecore_btn_primary_text_color_hover', '#0A2540');
+    $btn_primary_border_color_hover = get_theme_mod('dadecore_btn_primary_border_color_hover', '#00D1B2');
+    $btn_primary_border_thickness = get_theme_mod('dadecore_btn_primary_border_thickness', 2);
+    $btn_primary_border_radius = get_theme_mod('dadecore_btn_primary_border_radius', 5);
+
+    $btn_secondary_bg_color = get_theme_mod('dadecore_btn_secondary_bg_color', 'transparent');
+    $btn_secondary_text_color = get_theme_mod('dadecore_btn_secondary_text_color', '#0A2540');
+    $btn_secondary_border_color = get_theme_mod('dadecore_btn_secondary_border_color', '#0A2540');
+    $btn_secondary_bg_color_hover = get_theme_mod('dadecore_btn_secondary_bg_color_hover', '#0A2540');
+    $btn_secondary_text_color_hover = get_theme_mod('dadecore_btn_secondary_text_color_hover', '#FFFFFF');
+    $btn_secondary_border_color_hover = get_theme_mod('dadecore_btn_secondary_border_color_hover', '#0A2540');
+    $btn_secondary_border_thickness = get_theme_mod('dadecore_btn_secondary_border_thickness', 2);
+    $btn_secondary_border_radius = get_theme_mod('dadecore_btn_secondary_border_radius', 5);
 
     ?>
     :root {
@@ -611,9 +907,35 @@ function dadecore_customizer_css() {
 
         --dadecore-header-bg-color: <?php echo esc_attr( $header_bg_color ); ?>;
         --dadecore-header-text-color: <?php echo esc_attr( $header_text_color ); ?>;
+        --dadecore-logo-max-width: <?php echo esc_attr( $logo_max_width ); ?>px;
 
         --dadecore-footer-bg-color: <?php echo esc_attr( $footer_bg_color ); ?>;
         --dadecore-footer-text-color: <?php echo esc_attr( $footer_text_color ); ?>;
+
+        /* Button Primary Variables */
+        --dadecore-btn-primary-bg: <?php echo esc_attr( $btn_primary_bg_color ); ?>;
+        --dadecore-btn-primary-text: <?php echo esc_attr( $btn_primary_text_color ); ?>;
+        --dadecore-btn-primary-border-color: <?php echo esc_attr( $btn_primary_border_color ); ?>;
+        --dadecore-btn-primary-bg-hover: <?php echo esc_attr( $btn_primary_bg_color_hover ); ?>;
+        --dadecore-btn-primary-text-hover: <?php echo esc_attr( $btn_primary_text_color_hover ); ?>;
+        --dadecore-btn-primary-border-color-hover: <?php echo esc_attr( $btn_primary_border_color_hover ); ?>;
+        --dadecore-btn-primary-border-thickness: <?php echo esc_attr( $btn_primary_border_thickness ); ?>px;
+        --dadecore-btn-primary-border-radius: <?php echo esc_attr( $btn_primary_border_radius ); ?>px;
+
+        /* Button Secondary Variables */
+        --dadecore-btn-secondary-bg: <?php echo esc_attr( $btn_secondary_bg_color ); ?>;
+        --dadecore-btn-secondary-text: <?php echo esc_attr( $btn_secondary_text_color ); ?>;
+        --dadecore-btn-secondary-border-color: <?php echo esc_attr( $btn_secondary_border_color ); ?>;
+        --dadecore-btn-secondary-bg-hover: <?php echo esc_attr( $btn_secondary_bg_color_hover ); ?>;
+        --dadecore-btn-secondary-text-hover: <?php echo esc_attr( $btn_secondary_text_color_hover ); ?>;
+        --dadecore-btn-secondary-border-color-hover: <?php echo esc_attr( $btn_secondary_border_color_hover ); ?>;
+        --dadecore-btn-secondary-border-thickness: <?php echo esc_attr( $btn_secondary_border_thickness ); ?>px;
+        --dadecore-btn-secondary-border-radius: <?php echo esc_attr( $btn_secondary_border_radius ); ?>px;
+    }
+
+    .site-logo img {
+        max-width: var(--dadecore-logo-max-width);
+        height: auto; /* Maintain aspect ratio */
     }
 
     body {
@@ -627,14 +949,7 @@ function dadecore_customizer_css() {
     a {
         color: var(--dadecore-primary-color);
     }
-    .button, button, input[type="button"], input[type="reset"], input[type="submit"], .read-more-link, .wp-block-button__link {
-        background-color: var(--dadecore-primary-color);
-        color: #ffffff;
-        border-color: var(--dadecore-primary-color);
-    }
-    .button:hover, button:hover, input[type="button"]:hover, input[type="reset"]:hover, input[type="submit"]:hover, .read-more-link:hover, .wp-block-button__link:hover {
-        opacity: 0.85;
-    }
+    /* Button styling is now handled by assets/css/main.css using the new CSS variables */
 
     .site-header {
         background-color: var(--dadecore-header-bg-color);
@@ -709,11 +1024,14 @@ function dadecore_customize_preview_js() {
         'Oswald' => 'Oswald, sans-serif',
         'Noto Sans' => '"Noto Sans", sans-serif',
     ];
-    $default_font_key_for_js = 'System Default';
+    // Updated default font keys for JS
+    $default_body_font_key_js = 'Inter';
+    $default_heading_font_key_js = 'Poppins';
+
 
     wp_localize_script('dadecore-customizer-preview', 'dadecoreCustomizerPreview', [
-        'bodyFontDefault' => $font_mappings_for_js[$default_font_key_for_js],
-        'headingFontDefault' => $font_mappings_for_js[$default_font_key_for_js],
+        'bodyFontDefault' => $font_mappings_for_js[$default_body_font_key_js] ?? $font_mappings_for_js['System Default'],
+        'headingFontDefault' => $font_mappings_for_js[$default_heading_font_key_js] ?? $font_mappings_for_js['System Default'],
         'fontChoices' => $font_mappings_for_js // Pasar todos los mapeos de fuentes
     ]);
 }

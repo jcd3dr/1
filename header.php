@@ -5,7 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <?php wp_head(); ?>
 </head>
-<body <?php body_class(); ?>>
+<?php
+$body_classes = [];
+if ( get_theme_mod( 'dadecore_enable_animated_borders', false ) ) {
+    $body_classes[] = 'has-animated-borders';
+}
+if ( get_theme_mod( 'dadecore_enable_glassmorphism', false ) ) {
+    $body_classes[] = 'has-glassmorphism';
+}
+?>
+<body <?php body_class( $body_classes ); ?>>
 <?php wp_body_open(); ?>
 <?php
 $header_layout = get_theme_mod( 'dadecore_header_layout', 'logo-left-menu-right' );
