@@ -51,14 +51,40 @@
             <div class="content-with-sidebar <?php echo esc_attr( $sidebar_class ); ?>">
                 <main id="main" class="<?php echo $main_class; ?>">
                     <?php if ( have_posts() ) : ?>
+                        <?php
+                        $blog_content_display = get_theme_mod( 'dadecore_blog_content_display', 'excerpt' );
+                        $template_part_slug = 'content';
+                        if ( get_post_type() === 'post' ) { // Aplicar solo a posts, no a CPTs que puedan usar home.php
+                            if ( $blog_content_display === 'excerpt' ) {
+                                $template_part_slug = 'content-excerpt';
+                            } else {
+                                // Para 'full', usamos 'content.php' que ya muestra the_content()
+                                $template_part_slug = 'content';
+                            }
+                        } else {
+                            // Para otros CPTs, podríamos decidir usar 'content' o su slug específico
+                            $template_part_slug = 'content-' . get_post_type();
+                            // O simplemente 'content' si 'content-cptslug.php' no existe y 'content.php' es el fallback
+                            if ( ! locate_template( 'template-parts/' . $template_part_slug . '.php' ) ) {
+                                $template_part_slug = 'content';
+                            }
+                        }
+                        ?>
                         <?php while ( have_posts() ) : the_post(); ?>
-                            <?php get_template_part( 'template-parts/content', get_post_type() !== 'post' ? get_post_type() : 'excerpt' ); ?>
+                            <?php get_template_part( 'template-parts/' . $template_part_slug, get_post_format() ); // Pasamos get_post_format() por si queremos añadir soporte en el futuro ?>
                         <?php endwhile; ?>
-                        <?php the_posts_pagination( array(
-                            'mid_size'  => 2,
-                            'prev_text' => esc_html__( '&laquo; Anterior', 'dadecore' ),
-                            'next_text' => esc_html__( 'Siguiente &raquo;', 'dadecore' ),
-                        ) ); ?>
+                        <?php
+                        // Argumentos de paginación desde el Customizer
+                        $pagination_args = [
+                            'mid_size'           => get_theme_mod( 'dadecore_pagination_mid_size', 2 ),
+                            'end_size'           => get_theme_mod( 'dadecore_pagination_end_size', 1 ),
+                            'prev_next'          => get_theme_mod( 'dadecore_pagination_show_prev_next', true ),
+                            'prev_text'          => get_theme_mod( 'dadecore_pagination_prev_text', __( '&laquo; Anterior', 'dadecore' ) ),
+                            'next_text'          => get_theme_mod( 'dadecore_pagination_next_text', __( 'Siguiente &raquo;', 'dadecore' ) ),
+                            'screen_reader_text' => __( 'Navegación de entradas', 'dadecore' ), // Importante para accesibilidad
+                        ];
+                        the_posts_pagination( $pagination_args );
+                        ?>
                     <?php else : ?>
                         <?php get_template_part( 'template-parts/content', 'none' ); ?>
                     <?php endif; ?>

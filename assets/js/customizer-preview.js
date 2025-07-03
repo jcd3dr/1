@@ -93,6 +93,22 @@
     // so it doesn't need JS handling here for live preview. Changes will cause a full refresh.
     // Same for excerpt length.
 
+    // -- Related Posts Title --
+    wp.customize( 'dadecore_related_posts_title', function( value ) {
+        value.bind( function( to ) {
+            var $titleElement = $( '.related-posts .related-posts-title' );
+            if ( to ) {
+                if ( $titleElement.length ) {
+                    $titleElement.text( to ).show();
+                } else if ( $( '.related-posts ul' ).length ) { // Si la lista existe, pero el título no
+                    $( '<h3 class="related-posts-title">' + to + '</h3>' ).prependTo( '.related-posts' );
+                }
+            } else {
+                $titleElement.hide().text( '' );
+            }
+        } );
+    } );
+
     // -- Show/Hide Post Meta Elements --
     function dadecore_toggle_post_meta_element( setting, selector, parentSelector = null ) {
         wp.customize( setting, function( value ) {

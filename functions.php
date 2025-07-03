@@ -41,6 +41,19 @@ function dadecore_setup() {
 
     // Wide and full align images.
     add_theme_support( 'align-wide' );
+
+    // Add support for post formats.
+    add_theme_support( 'post-formats', [
+        'aside',
+        'image',
+        'video',
+        'quote',
+        'link',
+        'gallery',
+        // 'status',
+        // 'audio',
+        // 'chat',
+    ] );
 }
 add_action( 'after_setup_theme', 'dadecore_setup' );
 
@@ -55,8 +68,11 @@ function dadecore_scripts() {
 
     wp_enqueue_script( 'dadecore-main', get_template_directory_uri() . '/assets/js/main.js', [], $theme_version, true );
 
-    // Enqueue Google Fonts
-    wp_enqueue_style( 'dadecore-google-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Poppins:wght@400;700&display=swap', [], null );
+    // Dynamically enqueue selected Google Fonts
+    $google_fonts_url = dadecore_get_selected_google_fonts_url();
+    if ( $google_fonts_url ) {
+        wp_enqueue_style( 'dadecore-google-fonts', $google_fonts_url, [], null );
+    }
 }
 add_action( 'wp_enqueue_scripts', 'dadecore_scripts' );
 
@@ -64,10 +80,57 @@ add_action( 'wp_enqueue_scripts', 'dadecore_scripts' );
  * Enqueue styles for the block editor.
  */
 function dadecore_editor_assets() {
-    // Enqueue Google Fonts for the editor
-    wp_enqueue_style( 'dadecore-google-fonts-editor', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Poppins:wght@400;700&display=swap', [], null );
+    // Dynamically enqueue selected Google Fonts for the editor
+    $google_fonts_url = dadecore_get_selected_google_fonts_url();
+    if ( $google_fonts_url ) {
+        wp_enqueue_style( 'dadecore-google-fonts-editor', $google_fonts_url, [], null );
+    }
 }
 add_action( 'enqueue_block_editor_assets', 'dadecore_editor_assets' );
+
+/**
+ * Helper function to get the URL for Google Fonts based on Customizer settings.
+ */
+function dadecore_get_selected_google_fonts_url() {
+    $google_font_keys = [ // Keys from $font_choices that are Google Fonts
+        'Inter', 'Poppins', 'Lato', 'Montserrat', 'Open Sans', 'Roboto', 'Oswald', 'Noto Sans'
+    ];
+
+    $body_font_key = get_theme_mod( 'dadecore_body_font', 'System Default' );
+    $heading_font_key = get_theme_mod( 'dadecore_heading_font', 'System Default' );
+
+    $selected_google_fonts = [];
+
+    if ( in_array( $body_font_key, $google_font_keys ) ) {
+        $selected_google_fonts[$body_font_key] = '1'; // Basic request, can be expanded for weights
+    }
+    if ( in_array( $heading_font_key, $google_font_keys ) ) {
+        $selected_google_fonts[$heading_font_key] = '1'; // Basic request
+    }
+
+    if ( empty( $selected_google_fonts ) ) {
+        return false;
+    }
+
+    $font_families = [];
+    foreach ( array_keys( $selected_google_fonts ) as $font_name ) {
+        // Replace space with plus for URL, and add weights.
+        // Example: 'Open Sans' becomes 'Open+Sans:wght@400;700'
+        // For simplicity, requesting common weights. This could be more granular.
+        $font_families[] = str_replace( ' ', '+', $font_name ) . ':wght@400;700';
+    }
+
+    if ( empty( $font_families ) ) {
+        return false;
+    }
+
+    $query_args = [
+        'family'  => implode( '|', $font_families ),
+        'display' => 'swap',
+    ];
+
+    return add_query_arg( $query_args, 'https://fonts.googleapis.com/css2' );
+}
 
 /**
  * Register widget areas.
@@ -94,7 +157,9 @@ function dadecore_widgets_init() {
         'after_title'   => '</h2>',
     ] );
 
-    for ( $i = 1; $i <= 3; $i++ ) {
+    // Registrar hasta 4 sidebars para el footer
+    $max_footer_sidebars = 4; // Definir el máximo
+    for ( $i = 1; $i <= $max_footer_sidebars; $i++ ) {
         register_sidebar( [
             'name'          => sprintf( __( 'Footer Column %d', 'dadecore' ), $i ),
             'id'            => 'footer-' . $i,
@@ -193,3 +258,62 @@ add_action( 'update_option_dadecore_theme_options', function( $old_value, $value
         set_transient( 'dadecore_login_slug_changed', 1, HOUR_IN_SECONDS );
     }
 }, 10, 2 );
+
+/**
+ * Display related posts.
+ *
+ * @param int $post_id The ID of the current post.
+ */
+function dadecore_display_related_posts( $post_id = null ) {
+    if ( ! get_theme_mod( 'dadecore_show_related_posts', true ) ) {
+        return;
+    }
+
+    if ( is_null( $post_id ) ) {
+        $post_id = get_the_ID();
+    }
+
+    $categories = get_the_category( $post_id );
+    if ( empty( $categories ) ) {
+        return;
+    }
+
+    $category_ids = [];
+    foreach ( $categories as $category ) {
+        $category_ids[] = $category->term_id;
+    }
+
+    $related_posts_args = [
+        'category__in'        => $category_ids,
+        'post__not_in'        => [ $post_id ],
+        'posts_per_page'      => absint( get_theme_mod( 'dadecore_related_posts_count', 3 ) ),
+        'ignore_sticky_posts' => 1,
+        'orderby'             => 'rand', // O 'date' para los más recientes
+    ];
+
+    $related_posts_query = new WP_Query( $related_posts_args );
+
+    if ( $related_posts_query->have_posts() ) {
+        $related_title = get_theme_mod( 'dadecore_related_posts_title', __( 'También te podría interesar', 'dadecore' ) );
+        echo '<section class="related-posts">';
+        if ( ! empty( $related_title ) ) {
+            echo '<h3 class="related-posts-title">' . esc_html( $related_title ) . '</h3>';
+        }
+        echo '<ul>';
+        while ( $related_posts_query->have_posts() ) {
+            $related_posts_query->the_post();
+            echo '<li>';
+            if ( has_post_thumbnail() && get_theme_mod( 'dadecore_related_posts_show_thumbnail', true ) ) {
+                echo '<a href="' . esc_url( get_permalink() ) . '" class="related-post-thumbnail">';
+                the_post_thumbnail( 'thumbnail' ); // o 'medium'
+                echo '</a>';
+            }
+            echo '<a href="' . esc_url( get_permalink() ) . '" class="related-post-title">' . get_the_title() . '</a>';
+            // Podríamos añadir la fecha o un extracto pequeño aquí también.
+            echo '</li>';
+        }
+        echo '</ul>';
+        echo '</section>';
+    }
+    wp_reset_postdata();
+}

@@ -7,16 +7,36 @@
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
-<header class="site-header">
+<?php
+$header_layout = get_theme_mod( 'dadecore_header_layout', 'logo-left-menu-right' );
+$header_classes = 'site-header layout-' . esc_attr( $header_layout );
+?>
+<header class="<?php echo $header_classes; ?>">
     <div class="container">
-        <?php if ( has_custom_logo() ) : ?>
-            <div class="site-logo"><?php the_custom_logo(); ?></div>
-        <?php endif; ?>
+        <div class="site-branding">
+            <?php if ( has_custom_logo() ) : ?>
+                <div class="site-logo"><?php the_custom_logo(); ?></div>
+            <?php else : ?>
+                <?php if ( is_front_page() && is_home() ) : ?>
+                    <h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></h1>
+                <?php else : ?>
+                    <p class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></p>
+                <?php endif; ?>
+                <?php
+                $description = get_bloginfo( 'description', 'display' );
+                if ( $description || is_customize_preview() ) :
+                    ?>
+                    <p class="site-description"><?php echo $description; ?></p>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div><!-- .site-branding -->
+
         <nav id="site-navigation" class="main-navigation">
             <?php
             wp_nav_menu( [
                 'theme_location' => 'menu-1',
                 'menu_id'        => 'primary-menu',
+                'container'      => false, // No queremos un div contenedor extra por defecto
             ] );
             ?>
         </nav><!-- #site-navigation -->
