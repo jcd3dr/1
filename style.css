@@ -11,7 +11,452 @@ Text Domain: dadecore
 Tags: custom-background, custom-logo, custom-menu, featured-images, threaded-comments, translation-ready
 */
 
-/*
- * Import main theme styles here.
- */
+/* Estilos básicos del tema aquí */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* Stack de fuentes moderno */
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa; /* Un gris muy claro para el fondo */
+    color: #212529; /* Color de texto principal oscuro */
+}
 
+.container {
+    width: 90%;
+    max-width: 1200px; /* Máximo ancho para contenido principal */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Header */
+.site-header {
+    background: #ffffff; /* Header blanco */
+    color: #212529;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef; /* Borde sutil */
+}
+
+.site-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.site-logo img {
+    max-height: 50px; /* Ajustar según el tamaño del logo */
+    width: auto;
+}
+
+.main-navigation ul {
+    padding: 0;
+    list-style: none;
+    margin: 0;
+}
+
+.main-navigation ul li {
+    display: inline;
+    margin-left: 25px;
+}
+
+.main-navigation ul li a {
+    color: #212529;
+    text-decoration: none;
+    font-weight: 500;
+}
+.main-navigation ul li a:hover,
+.main-navigation ul li.current-menu-item a {
+    color: #007bff; /* Color de acento primario */
+}
+
+/* Contenido Principal */
+.site-content { /* ID main del header.php */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Footer */
+.site-footer {
+    background: #343a40; /* Footer oscuro */
+    color: #ffffff;
+    text-align: center;
+    padding: 2.5rem 0;
+    margin-top: 2rem;
+}
+
+.site-footer a {
+    color: #007bff;
+}
+
+/* Estructura Blog Page */
+.blog-page-container .hero-section {
+    padding: 3rem 0; /* Más padding para el hero */
+    background-color: #e9ecef;
+    text-align: center;
+    margin-bottom: 2.5rem; /* Más margen inferior */
+    border-radius: 0.25rem; /* Bordes redondeados sutiles */
+}
+
+.blog-page-container .hero-section .page-title {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 2.8rem; /* Título más grande */
+    font-weight: 600;
+}
+
+.blog-page-container .hero-section .page-subtitle {
+    font-size: 1.25rem;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/* Layout con Sidebar */
+.content-with-sidebar {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2.5rem; /* Un poco más de espacio */
+}
+
+.content-with-sidebar .site-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.content-with-sidebar .widget-area,
+.content-with-sidebar .sidebar { /* Para sidebar.php y la clase genérica de WP */
+    width: 320px; /* Ancho ligeramente mayor para el sidebar */
+    flex-shrink: 0;
+    background-color: #ffffff; /* Fondo blanco para el sidebar */
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 0.25rem;
+}
+
+/* Sidebar a la izquierda */
+.content-with-sidebar.sidebar-left {
+    /* El sidebar se renderiza antes en el HTML si está a la izquierda */
+}
+.content-with-sidebar.sidebar-left .site-main {
+    order: 2;
+}
+.content-with-sidebar.sidebar-left .widget-area,
+.content-with-sidebar.sidebar-left .sidebar {
+    order: 1;
+}
+
+@media (max-width: 992px) { /* Ajuste para tablets y móviles más grandes */
+    .content-with-sidebar {
+        gap: 2rem;
+    }
+    .content-with-sidebar .widget-area,
+    .content-with-sidebar .sidebar {
+        width: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-with-sidebar {
+        flex-direction: column;
+    }
+    .content-with-sidebar .widget-area,
+    .content-with-sidebar .sidebar {
+        width: 100%;
+        margin-top: 2rem;
+    }
+    .content-with-sidebar.sidebar-left .site-main,
+    .content-with-sidebar.sidebar-left .widget-area,
+    .content-with-sidebar.sidebar-left .sidebar {
+        order: initial; /* Resetea el orden en móvil */
+    }
+}
+
+/* Estilos para las entradas del blog en el listado (content-excerpt.php) */
+.blog-post-summary {
+    background: #ffffff;
+    padding: 2rem; /* Más padding interno */
+    margin-bottom: 2rem;
+    border: 1px solid #e9ecef;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Sombra sutil */
+    display: flex; /* Para que el contenido interno se organice bien si es necesario */
+    flex-direction: column; /* Asegura que el contenido fluya verticalmente */
+}
+
+/* Vista de Lista (por defecto, no se necesita .view-lista si estos son los estilos base) */
+/* .site-main.view-lista .blog-post-summary { ... } */
+
+
+/* Vista de Grid */
+.site-main.view-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr)); /* Columnas responsivas */
+    gap: 2rem; /* Espacio entre items del grid */
+}
+
+.site-main.view-grid .blog-post-summary {
+    margin-bottom: 0; /* El gap del grid maneja el espaciado */
+    /* Si se quiere que todos los cards tengan la misma altura:
+    height: 100%;
+    */
+}
+
+/* Ajustes responsivos para el grid si se quiere cambiar número de columnas explícitamente */
+/* Por ejemplo, forzar 1 columna en móviles pequeños si minmax no es suficiente */
+@media (max-width: 480px) {
+    .site-main.view-grid {
+        grid-template-columns: 1fr; /* Una columna */
+    }
+}
+
+
+.blog-post-summary .post-thumbnail {
+    margin-bottom: 1.5rem;
+}
+.blog-post-summary .post-thumbnail img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.25rem;
+}
+
+.blog-post-summary .entry-header {
+    margin-bottom: 0.75rem;
+}
+.blog-post-summary .entry-title {
+    font-size: 1.9rem; /* Título de entrada más prominente */
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.blog-post-summary .entry-title a {
+    color: #212529;
+    text-decoration: none;
+}
+.blog-post-summary .entry-title a:hover {
+    color: var(--dadecore-primary-color); /* Usar variable CSS */
+}
+
+.blog-post-summary .entry-meta {
+    font-size: 0.85em;
+    color: #6c757d; /* Un gris suave para los metadatos */
+    margin-bottom: 0.75rem;
+}
+
+.blog-post-summary .entry-meta span {
+    margin-right: 1em;
+}
+
+.blog-post-summary .entry-meta span:last-child {
+    margin-right: 0;
+}
+
+.blog-post-summary .entry-meta a {
+    color: #6c757d; /* Mismo color que el texto meta */
+    text-decoration: none;
+}
+
+.blog-post-summary .entry-meta a:hover {
+    color: var(--dadecore-primary-color); /* Color primario al hacer hover */
+    text-decoration: underline;
+}
+
+
+.blog-post-summary .entry-summary {
+    margin-bottom: 1.5rem;
+    color: #495057; /* Color de texto ligeramente más suave para el resumen */
+}
+
+.blog-post-summary .entry-footer {
+    margin-top: 1rem;
+}
+.blog-post-summary .read-more-link {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background-color: #007bff;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    transition: background-color 0.15s ease-in-out;
+}
+.blog-post-summary .read-more-link:hover {
+    background-color: #0056b3;
+}
+
+/* Paginación */
+.navigation.pagination {
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+}
+.navigation.pagination .nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+.navigation.pagination .nav-links .page-numbers {
+    padding: 0.6em 1.1em; /* Un poco más de padding */
+    border: 1px solid #dee2e6;
+    text-decoration: none;
+    color: #007bff;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+.navigation.pagination .nav-links .page-numbers:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+.navigation.pagination .nav-links .page-numbers.current,
+.navigation.pagination .nav-links a.page-numbers:hover { /* Aplicar también al hover para consistencia */
+    background-color: #007bff;
+    color: #ffffff;
+    border-color: #007bff;
+}
+.navigation.pagination .nav-links .dots {
+    padding: 0.6em 0;
+}
+
+
+/* CTA Final Section */
+.cta-final-section {
+    background-color: #007bff; /* Color primario para el CTA */
+    color: #ffffff;
+    padding: 3rem 0;
+    text-align: center;
+    margin-top: 2.5rem;
+}
+.cta-final-section h2 {
+    font-size: 2rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.cta-final-section p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+.cta-final-section .button,
+.cta-final-section button,
+.cta-final-section input[type="submit"] { /* Estilos para botones dentro del CTA */
+    padding: 0.75rem 1.5rem;
+    background-color: #ffffff;
+    color: #007bff;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    border: 1px solid #ffffff;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+.cta-final-section .button:hover,
+.cta-final-section button:hover,
+.cta-final-section input[type="submit"]:hover {
+    background-color: #f8f9fa;
+    color: #0056b3;
+}
+
+/* Widgets del Sidebar */
+.widget-area .widget {
+    margin-bottom: 2rem;
+}
+.widget-area .widget:last-child {
+    margin-bottom: 0;
+}
+.widget-area .widget .widget-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+.widget-area .widget ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+.widget-area .widget ul li {
+    margin-bottom: 0.5rem;
+    border-bottom: 1px dashed #e9ecef;
+    padding-bottom: 0.5rem;
+}
+.widget-area .widget ul li:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.widget-area .widget ul li a {
+    text-decoration: none;
+    color: #212529;
+}
+.widget-area .widget ul li a:hover {
+    color: #007bff;
+}
+
+/* Formularios básicos */
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="password"],
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    box-sizing: border-box; /* Importante para que el padding no aumente el ancho */
+}
+input[type="search"] { /* Para el widget de búsqueda */
+    padding-right: 3rem; /* Espacio para un posible botón dentro */
+}
+
+button, input[type="submit"] {
+    cursor: pointer;
+}
+
+/* Clases de utilidad */
+.sr-only { /* Screen reader only */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
+/* Alineaciones de Gutenberg */
+.alignleft {
+    float: left;
+    margin-right: 1.5em;
+    margin-bottom: 1.5em;
+}
+.alignright {
+    float: right;
+    margin-left: 1.5em;
+    margin-bottom: 1.5em;
+}
+.aligncenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1.5em;
+}
+.alignwide {
+    margin-left: -100px; /* Ajustar según el padding del contenedor padre */
+    margin-right: -100px;
+    max-width: calc(100% + 200px); /* Ajustar según el padding */
+}
+.alignfull {
+    margin-left: calc(-100vw / 2 + 100% / 2);
+    margin-right: calc(-100vw / 2 + 100% / 2);
+    max-width: 100vw;
+}
+
+/* Limpiar floats (si todavía se usan en algún sitio, aunque flexbox es preferible) */
+.clearfix::after,
+article::after, /* Para limpiar floats dentro de artículos */
+.entry-content::after {
+    content: "";
+    clear: both;
+    display: table;
+}
