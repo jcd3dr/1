@@ -1,4 +1,64 @@
-/* Editor styles */
-body {
-    font-family: "Inter", sans-serif;
+/* Editor Styles for DadeCore Theme */
+
+/*
+The primary purpose of this file is to ensure that the editor experience
+matches the front-end experience as closely as possible.
+
+Many global styles (colors, typography, layout widths) are automatically
+applied by WordPress based on theme.json settings. The CSS variables
+defined in inc/customizer.php (e.g., --dadecore-primary-color) are also
+made available to the editor.
+
+This file should be used for:
+1. Overriding or fine-tuning styles if the automatic application isn't perfect.
+2. Styling editor-specific wrapper elements if needed.
+3. Ensuring customizer-driven font choices are correctly applied if theme.json
+   defaults or block-specific styles override them too aggressively.
+*/
+
+/* Apply Customizer font choices to the main editor wrapper and headings.
+   This helps ensure that the base font settings from the Customizer are
+   respected, even if individual blocks or theme.json settings try to
+   override them at a global level within the editor. Using !important
+   can be necessary if theme.json styles are too specific. */
+.editor-styles-wrapper {
+    font-family: var(--dadecore-body-font-family);
+}
+
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4,
+.editor-styles-wrapper h5,
+.editor-styles-wrapper h6 {
+    font-family: var(--dadecore-heading-font-family);
+}
+
+/* Apply Customizer primary color to links within the editor */
+.editor-styles-wrapper a {
+    color: var(--dadecore-primary-color);
+}
+
+/*
+  It's generally recommended to let theme.json handle content widths
+  (contentSize, wideSize) as WordPress uses these to style the editor area.
+  If you need to override these specifically for the editor wrapper visuals:
+
+  .editor-styles-wrapper {
+    max-width: var(--wp--style--global--content-size); // Example using theme.json generated var
+    margin-left: auto;
+    margin-right: auto;
+  }
+*/
+
+/*
+  If you have specific CSS for elements that look different in the editor
+  than on the front-end, you can add those rules here. For example, if
+  a custom block needs slight adjustments to appear correctly in the editor.
+*/
+
+/* Example: Ensure blockquotes use the body font by default in editor,
+   unless a block style specifically changes it. */
+.editor-styles-wrapper blockquote {
+    font-family: var(--dadecore-body-font-family);
 }

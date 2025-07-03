@@ -1,8 +1,20 @@
 /* Main theme styles */
 body {
-    color: #333;
+    font-family: var(--dadecore-body-font-family);
+    color: #333; /* Default text color, can be overridden by theme.json or specific block styles */
 }
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--dadecore-heading-font-family);
+    /* Margin/padding for headings should be defined here or in a reset/typography partial if not handled by blocks */
+}
+
+a {
+    color: var(--dadecore-primary-color);
+}
+
 .site-header {
+    background-color: var(--dadecore-header-bg-color);
     padding: 1rem 0;
     position: sticky;
     top: 0;
@@ -28,6 +40,12 @@ body {
 }
 .footer-column {
     flex: 1;
+}
+
+.site-footer {
+    background-color: var(--dadecore-footer-bg-color);
+    padding: 2rem 0; /* Base padding for the footer */
+    color: #fff; /* Assuming footer text should be light on a dark background */
 }
 
 .content-with-sidebar {

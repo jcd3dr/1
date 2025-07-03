@@ -93,21 +93,28 @@ function dadecore_customize_register( $wp_customize ) {
 add_action( 'customize_register', 'dadecore_customize_register' );
 
 /**
- * Output custom styles based on Customizer settings.
+ * Output custom styles based on Customizer settings using CSS Custom Properties.
  */
 function dadecore_customizer_css() {
-    $primary     = get_theme_mod( 'dadecore_primary_color', '#2fd072' );
-    $header_bg   = get_theme_mod( 'dadecore_header_bg', '#0a2540' );
-    $footer_bg   = get_theme_mod( 'dadecore_footer_bg', '#0a2540' );
-    $body_font   = get_theme_mod( 'dadecore_body_font', 'Inter' );
-    $heading_font = get_theme_mod( 'dadecore_heading_font', 'Poppins' );
+    $primary_color     = get_theme_mod( 'dadecore_primary_color', '#2fd072' );
+    $header_bg_color   = get_theme_mod( 'dadecore_header_bg', '#0a2540' );
+    $footer_bg_color   = get_theme_mod( 'dadecore_footer_bg', '#0a2540' );
+    $body_font_family  = get_theme_mod( 'dadecore_body_font', 'Inter' );
+    $heading_font_family = get_theme_mod( 'dadecore_heading_font', 'Poppins' );
+
+    // Fallback for fonts in case the selected font is not available.
+    $body_font_stack = $body_font_family === 'Poppins' ? 'Poppins, sans-serif' : 'Inter, sans-serif';
+    $heading_font_stack = $heading_font_family === 'Inter' ? 'Inter, sans-serif' : 'Poppins, sans-serif';
+
     ?>
-    <style type="text/css">
-        body { font-family: '<?php echo esc_attr( $body_font ); ?>', sans-serif; }
-        h1, h2, h3, h4, h5, h6 { font-family: '<?php echo esc_attr( $heading_font ); ?>', sans-serif; }
-        a { color: <?php echo esc_attr( $primary ); ?>; }
-        .site-header { background-color: <?php echo esc_attr( $header_bg ); ?>; }
-        .site-footer { background-color: <?php echo esc_attr( $footer_bg ); ?>; }
+    <style type="text/css" id="dadecore-customizer-css">
+        :root {
+            --dadecore-primary-color: <?php echo esc_attr( $primary_color ); ?>;
+            --dadecore-header-bg-color: <?php echo esc_attr( $header_bg_color ); ?>;
+            --dadecore-footer-bg-color: <?php echo esc_attr( $footer_bg_color ); ?>;
+            --dadecore-body-font-family: '<?php echo esc_attr( $body_font_stack ); ?>';
+            --dadecore-heading-font-family: '<?php echo esc_attr( $heading_font_stack ); ?>';
+        }
     </style>
     <?php
 }
