@@ -33,7 +33,6 @@
     </section>
 
     <div class="container main-area-container">
-        <div class="content-with-sidebar">
             <?php
             $sidebar_position = get_theme_mod( 'dadecore_sidebar_position', 'derecha' );
             $sidebar_class = '';
